@@ -3,11 +3,13 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
+
 public class EscolaSystem extends JFrame {
 
     private AlunoController alunoController;
     private ProfessorController professorController;
     private DisciplinaController disciplinaController;
+
 
     // Componentes para alunos
     private DefaultTableModel modeloTabelaAlunos;
@@ -33,8 +35,35 @@ public class EscolaSystem extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        JTabbedPane tabbedPane = new JTabbedPane();
+        //Criando a barra de menu
+        JMenuBar menuBar = new JMenuBar();
 
+        //criando o menu
+        JMenu cadastro = new JMenu("Cadastrar");
+
+        // criando os itens do menu
+        JMenuItem cadastrarAluno = new JMenuItem("Cadastrar Aluno");
+        JMenuItem cadastrarProfessor = new JMenuItem("Cadastrar Professor");
+
+        // criando açoes do menu
+        cadastrarAluno.addActionListener(e -> adicionarAluno());
+        cadastrarProfessor.addActionListener(e -> adicionarProfessor());
+
+        cadastro.add(cadastrarAluno);
+        cadastro.add(cadastrarProfessor);
+
+        //adicionando menus a barra de menu
+        menuBar.add(cadastro);
+
+        //definindo a barra de menu na janela
+        setJMenuBar(menuBar);
+
+        // JTabbedPane tabbedPane = new JTabbedPane();
+
+       /* public void abrirJanelaListaAlunos() {
+            JFrame janelaAlunos = new JFrame("Lista de Alunos");
+            janelaAlunos.setSize(800, 600);
+        }*/ // ideia de abrir outra janela apenas pra listar os alunos ou professores
         // Painel Alunos
         JPanel painelAlunos = new JPanel(new BorderLayout());
 
@@ -58,7 +87,7 @@ public class EscolaSystem extends JFrame {
         painelBotoesAlunos.add(btnExcluirAluno);
         painelAlunos.add(painelBotoesAlunos, BorderLayout.SOUTH);
 
-        tabbedPane.addTab("Alunos", painelAlunos);
+        // tabbedPane.addTab("Alunos", painelAlunos);
 
         // Painel Professores
         JPanel painelProfessores = new JPanel(new BorderLayout());
@@ -83,9 +112,9 @@ public class EscolaSystem extends JFrame {
         painelBotoesProfessores.add(btnExcluirProfessor);
         painelProfessores.add(painelBotoesProfessores, BorderLayout.SOUTH);
 
-        tabbedPane.addTab("Professores", painelProfessores);
+        //tabbedPane.addTab("Professores", painelProfessores);
 
-        add(tabbedPane, BorderLayout.CENTER);
+        // add(tabbedPane, BorderLayout.CENTER);
 
         // Ações dos botões Alunos
         btnAdicionarAluno.addActionListener(e -> adicionarAluno());
@@ -123,15 +152,17 @@ public class EscolaSystem extends JFrame {
         JTextField tfMatricula = new JTextField();
         JTextField tfNome = new JTextField();
         JTextField tfIdade = new JTextField();
-        JTextField tfSerie = new JTextField();
+        JComboBox cbSerie = new JComboBox(new String[]{"1º", "2º", "3º"});
         JTextField tfTurma = new JTextField();
+        JComboBox<String> cbGenero = new JComboBox<>(new String[]{"Masculino", "Feminino", "Outro"});
 
         Object[] campos = {
                 "Matrícula:", tfMatricula,
                 "Nome:", tfNome,
                 "Idade:", tfIdade,
-                "Série:", tfSerie,
-                "Turma:", tfTurma
+                "Série:", cbSerie,
+                "Turma:", tfTurma,
+                "Gênero: ", cbGenero
         };
 
         int resultado = JOptionPane.showConfirmDialog(this, campos, "Adicionar Aluno", JOptionPane.OK_CANCEL_OPTION);
@@ -139,8 +170,9 @@ public class EscolaSystem extends JFrame {
             String matricula = tfMatricula.getText().trim();
             String nome = tfNome.getText().trim();
             String idadeStr = tfIdade.getText().trim();
-            String serie = tfSerie.getText().trim();
+            String serie = (String) cbSerie.getSelectedItem();
             String turma = tfTurma.getText().trim();
+            String genero = (String) cbGenero.getSelectedItem();
 
             if (matricula.isEmpty() || nome.isEmpty() || idadeStr.isEmpty() || serie.isEmpty() || turma.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -149,8 +181,8 @@ public class EscolaSystem extends JFrame {
             int idade;
             try {
                 idade = Integer.parseInt(idadeStr);
-                if (idade < 5 || idade > 25) {
-                    JOptionPane.showMessageDialog(this, "Idade deve ser entre 5 e 25 anos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                if (idade < 5 || idade > 20) {
+                    JOptionPane.showMessageDialog(this, "Idade deve ser entre 5 e 20 anos.", "Erro", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             } catch (NumberFormatException e) {
@@ -161,7 +193,7 @@ public class EscolaSystem extends JFrame {
                 JOptionPane.showMessageDialog(this, "Matrícula já cadastrada.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            Aluno aluno = new Aluno(nome, matricula, idade, serie, turma);
+            Aluno aluno = new Aluno(nome, matricula, idade, serie, turma, genero);
             alunoController.adicionarAluno(aluno);
             atualizaTabelaAlunos();
         }
@@ -182,15 +214,18 @@ public class EscolaSystem extends JFrame {
         JTextField tfMatricula = new JTextField(aluno.getMatricula());
         JTextField tfNome = new JTextField(aluno.getNome());
         JTextField tfIdade = new JTextField(String.valueOf(aluno.getIdade()));
-        JTextField tfSerie = new JTextField(aluno.getSerie());
+        JComboBox cbSerie = new JComboBox(new String[]{"1º", "2º", "3º"});
         JTextField tfTurma = new JTextField(aluno.getTurma());
+        JComboBox<String> cbGenero = new JComboBox<>(new String[]{"Masculino", "Feminino", "Outro"});
+        cbGenero.setSelectedItem(aluno.getGenero());
 
         Object[] campos = {
                 "Matrícula:", tfMatricula,
                 "Nome:", tfNome,
                 "Idade:", tfIdade,
-                "Série:", tfSerie,
-                "Turma:", tfTurma
+                "Série:", cbSerie,
+                "Turma:", tfTurma,
+                "Genero", cbGenero
         };
 
         int resultado = JOptionPane.showConfirmDialog(this, campos, "Editar Aluno", JOptionPane.OK_CANCEL_OPTION);
@@ -198,8 +233,9 @@ public class EscolaSystem extends JFrame {
             String matricula = tfMatricula.getText().trim();
             String nome = tfNome.getText().trim();
             String idadeStr = tfIdade.getText().trim();
-            String serie = tfSerie.getText().trim();
+            String serie = (String) cbSerie.getSelectedItem();
             String turma = tfTurma.getText().trim();
+            String genero = (String) cbGenero.getSelectedItem();
 
             if (matricula.isEmpty() || nome.isEmpty() || idadeStr.isEmpty() || serie.isEmpty() || turma.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -220,7 +256,7 @@ public class EscolaSystem extends JFrame {
                 JOptionPane.showMessageDialog(this, "M atrícula já cadastrada.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            Aluno alunoAtualizado = new Aluno(nome, matricula, idade, serie, turma);
+            Aluno alunoAtualizado = new Aluno(nome, matricula, idade, serie, turma, genero);
             alunoController.atualizarAluno(matriculaOriginal, alunoAtualizado);
             atualizaTabelaAlunos();
         }
@@ -376,17 +412,18 @@ class LoginDialog extends JDialog {
         setSize(600, 400);
         setLocationRelativeTo(null);// Centraliza o diálogo na tela
 
-        JLabel lblUsuario = new JLabel("Usuário:");
-        lblUsuario.setBounds(100, 100, 80, 30); // Ajustei a posição vertical
+
+        JLabel lblUsuario = new JLabel("Usuário");
+        lblUsuario.setBounds(200, 70, 80, 30); // Ajustei a posição vertical
         add(lblUsuario);
         txtUsuario = new JTextField();
         txtUsuario.setBounds(200, 100, 200, 30); // Ajustei a posição horizontal
         add(txtUsuario);
-        JLabel lblSenha = new JLabel("Senha:");
-        lblSenha.setBounds(100, 150, 80, 30); // Ajustei a posição vertical
+        JLabel lblSenha = new JLabel("Senha");
+        lblSenha.setBounds(200, 130, 80, 30); // Ajustei a posição vertical
         add(lblSenha);
         txtSenha = new JPasswordField();
-        txtSenha.setBounds(200, 150, 200, 30); // Ajustei a posição horizontal
+        txtSenha.setBounds(200, 160, 200, 30); // Ajustei a posição horizontal
         add(txtSenha);
         JButton btnEntrar = new JButton("Entrar");
         btnEntrar.setBounds(200, 200, 200, 30); // Ajustei a posição horizontal

@@ -31,6 +31,7 @@ public class AlunoController {
             aluno.setIdade(alunoAtualizado.getIdade());
             aluno.setSerie(alunoAtualizado.getSerie());
             aluno.setTurma(alunoAtualizado.getTurma());
+            aluno.setGenero(alunoAtualizado.getGenero());
         }
     }
 

@@ -4,13 +4,15 @@ public class Aluno {
     private int idade;
     private String serie;
     private String turma;
+    private String genero;
 
-    public Aluno(String nome, String matricula, int idade, String serie, String turma) {
+    public Aluno(String nome, String matricula, int idade, String serie, String turma, String genero) {
         this.nome = nome;
         this.matricula = matricula;
         this.idade = idade;
         this.serie = serie;
         this.turma = turma;
+        this.genero = genero;
     }
 
     public String getNome() {
@@ -51,5 +53,13 @@ public class Aluno {
 
     public void setTurma(String turma) {
         this.turma = turma;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    public void setGenero(String genero) {
+        this.genero = genero;
     }
 }
