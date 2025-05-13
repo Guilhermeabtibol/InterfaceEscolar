@@ -3,6 +3,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
+// colocar combobox nas disciplinas do professor
+//colocar cpf pro professor
 
 public class EscolaSystem extends JFrame {
 
@@ -58,12 +60,13 @@ public class EscolaSystem extends JFrame {
         //definindo a barra de menu na janela
         setJMenuBar(menuBar);
 
-        // JTabbedPane tabbedPane = new JTabbedPane();
+         JTabbedPane tabbedPane = new JTabbedPane();
 
        /* public void abrirJanelaListaAlunos() {
             JFrame janelaAlunos = new JFrame("Lista de Alunos");
             janelaAlunos.setSize(800, 600);
-        }*/ // ideia de abrir outra janela apenas pra listar os alunos ou professores
+        }*/ // ideia de abrir outra janela apenas pra listar o
+        // s alunos ou professores
         // Painel Alunos
         JPanel painelAlunos = new JPanel(new BorderLayout());
 
@@ -87,7 +90,7 @@ public class EscolaSystem extends JFrame {
         painelBotoesAlunos.add(btnExcluirAluno);
         painelAlunos.add(painelBotoesAlunos, BorderLayout.SOUTH);
 
-        // tabbedPane.addTab("Alunos", painelAlunos);
+         tabbedPane.addTab("Alunos", painelAlunos);
 
         // Painel Professores
         JPanel painelProfessores = new JPanel(new BorderLayout());
@@ -112,9 +115,9 @@ public class EscolaSystem extends JFrame {
         painelBotoesProfessores.add(btnExcluirProfessor);
         painelProfessores.add(painelBotoesProfessores, BorderLayout.SOUTH);
 
-        //tabbedPane.addTab("Professores", painelProfessores);
+        tabbedPane.addTab("Professores", painelProfessores);
 
-        // add(tabbedPane, BorderLayout.CENTER);
+         add(tabbedPane, BorderLayout.CENTER);
 
         // Ações dos botões Alunos
         btnAdicionarAluno.addActionListener(e -> adicionarAluno());
@@ -189,6 +192,11 @@ public class EscolaSystem extends JFrame {
                 JOptionPane.showMessageDialog(this, "Idade inválida.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            // delimitando a matricula em 7 digitos
+            if (!matricula.matches("\\d{7}")) {
+                JOptionPane.showMessageDialog(this, "A matrícula deve contar 7 digitos numéricos", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             if (alunoController.buscarAluno(matricula) != null) {
                 JOptionPane.showMessageDialog(this, "Matrícula já cadastrada.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -252,6 +260,11 @@ public class EscolaSystem extends JFrame {
                 JOptionPane.showMessageDialog(this, "Idade inválida.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            // delimitando a matricula em 7 digitos
+            if (!matricula.matches("\\d{7}")) {
+                JOptionPane.showMessageDialog(this, "A matrícula deve contar 7 digitos numéricos", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             if (!matricula.equals(matriculaOriginal) && alunoController.buscarAluno(matricula) != null) {
                 JOptionPane.showMessageDialog(this, "M atrícula já cadastrada.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -292,13 +305,13 @@ public class EscolaSystem extends JFrame {
     private void adicionarProfessor() {
         JTextField tfMatricula = new JTextField();
         JTextField tfNome = new JTextField();
-        JTextField tfDisciplinas = new JTextField();
+        JComboBox cbDisciplinas = new JComboBox(new String[]{"ADS24", "ENGS25"});
         JTextField tfSeriesAtendidas = new JTextField();
 
         Object[] campos = {
                 "Matrícula:", tfMatricula,
                 "Nome:", tfNome,
-                "Disciplinas (separadas por vírgula):", tfDisciplinas,
+                "Disciplinas:", cbDisciplinas,
                 "Séries Atendidas (separadas por vírgula):", tfSeriesAtendidas
         };
 
@@ -306,7 +319,7 @@ public class EscolaSystem extends JFrame {
         if (resultado == JOptionPane.OK_OPTION) {
             String matricula = tfMatricula.getText().trim();
             String nome = tfNome.getText().trim();
-            String disciplinasStr = tfDisciplinas.getText().trim();
+            String disciplinasStr = (String) cbDisciplinas.getSelectedItem();
             String seriesStr = tfSeriesAtendidas.getText().trim();
 
             if (matricula.isEmpty() || nome.isEmpty() || disciplinasStr.isEmpty() || seriesStr.isEmpty()) {
@@ -344,13 +357,13 @@ public class EscolaSystem extends JFrame {
 
         JTextField tfMatricula = new JTextField(professor.getMatricula());
         JTextField tfNome = new JTextField(professor.getNome());
-        JTextField tfDisciplinas = new JTextField(String.join(", ", professor.getDisciplinas()));
+        JComboBox cbDisciplinas = new JComboBox(new String[]{"ADS24", "ENGS25"});
         JTextField tfSeriesAtendidas = new JTextField(String.join(", ", professor.getSeriesAtendidas()));
 
         Object[] campos = {
                 "Matrícula:", tfMatricula,
                 "Nome:", tfNome,
-                "Disciplinas (separadas por vírgula):", tfDisciplinas,
+                "Disciplinas:", cbDisciplinas,
                 "Séries Atendidas (separadas por vírgula):", tfSeriesAtendidas
         };
 
@@ -358,10 +371,10 @@ public class EscolaSystem extends JFrame {
         if (resultado == JOptionPane.OK_OPTION) {
             String matricula = tfMatricula.getText().trim();
             String nome = tfNome.getText().trim();
-            String disciplinasStr = tfDisciplinas.getText().trim();
+            String disciplinas = (String) cbDisciplinas.getSelectedItem();
             String seriesStr = tfSeriesAtendidas.getText().trim();
 
-            if (matricula.isEmpty() || nome.isEmpty() || disciplinasStr.isEmpty() || seriesStr.isEmpty()) {
+            if (matricula.isEmpty() || nome.isEmpty() || disciplinas.isEmpty() || seriesStr.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -371,10 +384,10 @@ public class EscolaSystem extends JFrame {
                 return;
             }
 
-            List<String> disciplinas = List.of(disciplinasStr.split("\\s*,\\s*"));
+            List<String> cbdisciplinas = List.of(disciplinas.split("\\s*,\\s*"));
             List<String> series = List.of(seriesStr.split("\\s*,\\s*"));
 
-            Professor professorAtualizado = new Professor(nome, matricula, disciplinas, series);
+            Professor professorAtualizado = new Professor(nome, matricula, cbdisciplinas, series);
             professorController.atualizarProfessor(matriculaOriginal, professorAtualizado);
             atualizaTabelaProfessores();
         }
