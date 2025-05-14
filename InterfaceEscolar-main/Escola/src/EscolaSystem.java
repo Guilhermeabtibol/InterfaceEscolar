@@ -155,7 +155,7 @@ public class EscolaSystem extends JFrame {
         JTextField tfMatricula = new JTextField();
         JTextField tfNome = new JTextField();
         JTextField tfIdade = new JTextField();
-        JComboBox cbSerie = new JComboBox(new String[]{"1º", "2º", "3º"});
+        JComboBox cbSerie = new JComboBox(new String[]{"1ºA", "1º B", "1º C", "2ºA","2ºB","2ºC", "3ºA", "3ºB", "3ºC"});
         JTextField tfTurma = new JTextField();
         JComboBox<String> cbGenero = new JComboBox<>(new String[]{"Masculino", "Feminino", "Outro"});
 
@@ -222,7 +222,7 @@ public class EscolaSystem extends JFrame {
         JTextField tfMatricula = new JTextField(aluno.getMatricula());
         JTextField tfNome = new JTextField(aluno.getNome());
         JTextField tfIdade = new JTextField(String.valueOf(aluno.getIdade()));
-        JComboBox cbSerie = new JComboBox(new String[]{"1º", "2º", "3º"});
+        JComboBox cbSerie = new JComboBox(new String[]{"1ºA", "1º B", "1º C", "2ºA","2ºB","2ºC", "3ºA", "3ºB", "3ºC"});
         JTextField tfTurma = new JTextField(aluno.getTurma());
         JComboBox<String> cbGenero = new JComboBox<>(new String[]{"Masculino", "Feminino", "Outro"});
         cbGenero.setSelectedItem(aluno.getGenero());
@@ -296,8 +296,8 @@ public class EscolaSystem extends JFrame {
             modeloTabelaProfessores.addRow(new Object[]{
                     p.getMatricula(),
                     p.getNome(),
-                    String.join(", ", p.getDisciplinas()),
-                    String.join(", ", p.getSeriesAtendidas())
+                    p.getDisciplinas(),
+                    p.getSeriesAtendidas()
             });
         }
     }
@@ -305,14 +305,14 @@ public class EscolaSystem extends JFrame {
     private void adicionarProfessor() {
         JTextField tfMatricula = new JTextField();
         JTextField tfNome = new JTextField();
-        JComboBox cbDisciplinas = new JComboBox(new String[]{"ADS24", "ENGS25"});
-        JTextField tfSeriesAtendidas = new JTextField();
+        JComboBox cbDisciplinas = new JComboBox(new String[]{"Lingua Portuguesa", "Matemática", "Biologia", "Física", "Ed. Física"});
+        JComboBox cbSeriesAtendidas = new JComboBox(new String[]{"1ºA", "1º B", "1º C", "2ºA","2ºB","2ºC", "3ºA", "3ºB", "3ºC"});
 
         Object[] campos = {
                 "Matrícula:", tfMatricula,
                 "Nome:", tfNome,
                 "Disciplinas:", cbDisciplinas,
-                "Séries Atendidas (separadas por vírgula):", tfSeriesAtendidas
+                "Séries Atendidas (separadas por vírgula):", cbSeriesAtendidas
         };
 
         int resultado = JOptionPane.showConfirmDialog(this, campos, "Adicionar Professor", JOptionPane.OK_CANCEL_OPTION);
@@ -320,7 +320,7 @@ public class EscolaSystem extends JFrame {
             String matricula = tfMatricula.getText().trim();
             String nome = tfNome.getText().trim();
             String disciplinasStr = (String) cbDisciplinas.getSelectedItem();
-            String seriesStr = tfSeriesAtendidas.getText().trim();
+            String seriesStr = (String) cbSeriesAtendidas.getSelectedItem();
 
             if (matricula.isEmpty() || nome.isEmpty() || disciplinasStr.isEmpty() || seriesStr.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -357,14 +357,14 @@ public class EscolaSystem extends JFrame {
 
         JTextField tfMatricula = new JTextField(professor.getMatricula());
         JTextField tfNome = new JTextField(professor.getNome());
-        JComboBox cbDisciplinas = new JComboBox(new String[]{"ADS24", "ENGS25"});
-        JTextField tfSeriesAtendidas = new JTextField(String.join(", ", professor.getSeriesAtendidas()));
+        JComboBox cbDisciplinas = new JComboBox(new String[]{"Lingua Portuguesa", "Matemática", "Biologia", "Física", "Ed. Física"});
+        JComboBox cbSeriesAtendidas = new JComboBox(new String[]{"1ºA", "1º B", "1º C", "2ºA","2ºB","2ºC", "3ºA", "3ºB", "3ºC"});
 
         Object[] campos = {
                 "Matrícula:", tfMatricula,
                 "Nome:", tfNome,
                 "Disciplinas:", cbDisciplinas,
-                "Séries Atendidas (separadas por vírgula):", tfSeriesAtendidas
+                "Séries Atendidas:", cbSeriesAtendidas
         };
 
         int resultado = JOptionPane.showConfirmDialog(this, campos, "Editar Professor", JOptionPane.OK_CANCEL_OPTION);
@@ -372,7 +372,7 @@ public class EscolaSystem extends JFrame {
             String matricula = tfMatricula.getText().trim();
             String nome = tfNome.getText().trim();
             String disciplinas = (String) cbDisciplinas.getSelectedItem();
-            String seriesStr = tfSeriesAtendidas.getText().trim();
+            String seriesStr = (String) cbSeriesAtendidas.getSelectedItem();
 
             if (matricula.isEmpty() || nome.isEmpty() || disciplinas.isEmpty() || seriesStr.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -444,6 +444,7 @@ class LoginDialog extends JDialog {
 
         btnEntrar.addActionListener(e -> {
             String usuario = txtUsuario.getText();
+
             String senha = new String(txtSenha.getPassword());
 
             if (validarLogin(usuario, senha)) {
